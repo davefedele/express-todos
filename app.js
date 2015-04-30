@@ -32,7 +32,9 @@ app.get('/todos', function( request, response ){
 
 app.post('/todos', urlencode, function( request, response ){
   var newTodo = request.body;
-  
+  if(!newTodo.todo || !newTodo.description){
+    response.sendStatus(400); 
+  }
   client.hset('todos', newTodo.todo, newTodo.description, function( error ){
     if( error ) throw error;
     response.status(201).json(newTodo.todo);

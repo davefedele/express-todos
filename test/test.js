@@ -66,6 +66,13 @@ describe('Creating new todos', function () {
       .expect(/Brush/i, done);
   });
 
+  it('Validates todo and description', function (done) {
+    request(app)
+      .post('/todos')
+      .send('name=&description=')
+      .expect(400, done);
+  });
+
 });
 
 describe('Deleting todos', function () {
