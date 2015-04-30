@@ -92,3 +92,33 @@ describe('Deleting todos', function () {
   });
   
 });
+
+describe('Shows todo info', function () {
+
+  before(function(){
+    client.hset('todos', 'Golf', 'Play 9 holes');    
+  });
+
+  after(function(){
+    client.flushdb();
+  });
+
+  it('Returns 200 status code', function (done) {
+    request(app)
+      .get('/todos/Golf')
+      .expect(200, done);
+  });
+
+  it('Returns HTML format', function (done) {
+    request(app)
+      .get('/todos/Golf')
+      .expect('Content-Type', /html/, done);
+  });
+
+  it('Return the description', function (done) {
+    request(app)
+      .get('/todos/Golf')
+      .expect(/Play/, done);
+  });
+  
+});
