@@ -6,21 +6,31 @@ var urlencode = bodyparser.urlencoded({ extended: false });
 
 app.use(express.static('public'));
 
-var todos = {
-  'Laundry': 'wash sheets too', 
-  'Write ES7' : 'make sure it\'s functional', 
-  'Grocery Shopping' : 'bagels, yogurt, bananas' 
-  };
+var redis = require('redis');
+var client = redis.createClient();
+
+client.select((process.env.NODE_ENV || 'development').length);
+
+// client.hset('todos', 'Laundry', 'wash clothes and sheets too');
+// client.hset('todos', 'Workoug', 'run plus pushups/pullups');
+// client.hset('todos', 'Grocery Shopping', 'bagels, yogurt, bananas');
+// client.flushdb()
 
 app.get('/todos', function( request, response ){
-  response.json(Object.keys(todos));
+  client.hkeys('todos', function( error, todos){
+    if( error ) throw error;
+    response.json(todos);
+  });
 });
 
 app.post('/todos', urlencode, function( request, response ){
   var newTodo = request.body;
-  console.log(newTodo);
-  todos[newTodo.todo] = newTodo.description;
-  response.status(201).json(newTodo.todo);
+  
+  client.hset('todos', newTodo.todo, newTodo.description, function( error ){
+    if( error ) throw error;
+    response.status(201).json(newTodo.todo);
+  });
+  
 });
 
 module.exports = app;

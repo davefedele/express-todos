@@ -1,6 +1,11 @@
 var request = require('supertest');
 var app = require('./../app');
 
+var redis = require('redis');
+var client = redis.createClient();
+client.select('test'.length);
+client.flushdb();
+
 describe('Requests to the root path', function(){
   
   it('Returns a 200 status code', function(done){
@@ -40,7 +45,7 @@ describe('Listing todos on /todos', function(){
   it('Returns initial todos', function(done){
     request(app)
       .get('/todos')
-      .expect(JSON.stringify(['Laundry', 'Write ES7', 'Grocery Shopping']), done);
+      .expect(JSON.stringify([]), done);
   });
 
 });
