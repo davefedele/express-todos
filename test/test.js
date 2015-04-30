@@ -61,9 +61,27 @@ describe('Creating new todos', function () {
 
   it('Returns the todo', function (done) {
     request(app)
-    .post('/todos')
-    .send('todo=Brush+Teeth&description=clean+them+well')
-    .expect(/Brush/i, done);
+      .post('/todos')
+      .send('todo=Brush+Teeth&description=clean+them+well')
+      .expect(/Brush/i, done);
   });
 
+});
+
+describe('Deleting todos', function () {
+
+  before(function(){
+    client.hset('todos', 'Golf', 'Play 9 holes');
+  });
+
+  after(function(){
+    client.flushdb();
+  });
+
+  it('Returns a 204 status code', function (done) {
+    request(app)
+      .delete('/todos/Golf')
+      .expect(204, done);
+  });
+  
 });

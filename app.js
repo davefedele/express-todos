@@ -40,4 +40,11 @@ app.post('/todos', urlencode, function( request, response ){
   
 });
 
+app.delete('/todos/:todo', function( request, response) {
+  client.hdel('todos', request.params.todo, function(error){
+    if( error ) throw error;
+    response.sendStatus(204);
+  });
+});
+
 module.exports = app;
