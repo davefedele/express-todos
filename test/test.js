@@ -44,3 +44,21 @@ describe('Listing todos on /todos', function(){
   });
 
 });
+
+describe('Creating new todos', function () {
+  
+  it('Returns a 201 status code', function (done) {
+    request(app)
+      .post('/todos')
+      .send('todo=Brush+Teeth&description=clean+them+well')
+      .expect(201, done);
+  });
+
+  it('Returns the todo', function (done) {
+    request(app)
+    .post('/todos')
+    .send('todo=Brush+Teeth&description=clean+them+well')
+    .expect(/Brush/i, done);
+  });
+
+});

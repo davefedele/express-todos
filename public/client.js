@@ -1,24 +1,33 @@
 $(function(){
-  $.get('/todos', showTodos);
+
+  $.get('/todos', appendToList);
+  
+  $('.alert').hide();
 
   $('form').on('submit', function(event) {
     event.preventDefault();
+    
     var form = $(this);
     var todoData = form.serialize();
     $('.alert').hide();
+    
     $.ajax({
-      type: 'POST', url: '/todos', data: todoData
+      type: 'POST', 
+      url: '/todos', 
+      data: todoData
     })
-    .error(function() {
+    .error(function(err) {
       $('.alert').show();
+      console.error(err);
     })
     .success(function(todoName){
       appendToList([todoName]);
       form.trigger('reset');
     });
+
   });
 
-  function showTodos(todos){
+  function appendToList(todos){
     var list = [];
     var content, todo;
     var todoList = $('.todo-list');
@@ -44,6 +53,5 @@ $(function(){
         target.parents('li').remove();
       });
     });
-
 
 });
